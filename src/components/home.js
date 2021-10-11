@@ -1,14 +1,13 @@
-import { UserContext, EmptyUser } from "../context/UserContext";
+import { UserContext } from "../context/UserContext";
 import { Button } from 'reactstrap';
 import React, { useContext } from 'react';
 import { Link } from "react-router-dom";
 import { axiosInstance } from "../axios";
-import {config} from "../config"
 const Home = () => {
     const { user } = useContext(UserContext)
     const [userInfo, setUserInfo] = React.useState();
     const getUserInfo = () => {
-        axiosInstance.get(config.USER_INFO).then(result => {
+        axiosInstance.get(process.env.REACT_APP_USER_INFO_API).then(result => {
             console.log(result);
             setUserInfo(JSON.stringify(result.data));
         })
@@ -21,6 +20,7 @@ const Home = () => {
                 <Link to="/logout">Logout</Link>
                 <Button onClick={getUserInfo}>get user info</Button><br/>
                 {userInfo ? <span>{userInfo}</span>: ''}
+                <Link to="/todo">To do</Link>
             </>
         )
     }

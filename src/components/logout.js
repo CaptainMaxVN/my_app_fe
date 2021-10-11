@@ -1,11 +1,8 @@
 import React, { useContext } from 'react';
 import { UserContext, EmptyUser } from "../context/UserContext";
+
 const Logout = () => {
-    const { updateUser } = useContext(UserContext)
-    const logout = () => {
-        localStorage.removeItem("user");
-        updateUser(EmptyUser);
-    }
+    const { logout } = useContext(UserContext);
     logout();
     return (
         <>

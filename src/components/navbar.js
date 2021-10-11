@@ -1,34 +1,50 @@
-import { Link } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
-import React, { useContext } from 'react';
 const NavBar = () => {
-    const { user } = useContext(UserContext)
+
+
+    const renderLoginAndLogoutElement = user => {
+        if (user.accessToken) {
+            return (
+                <>
+                    <li className="nav-item">
+                        <span className="navbar-text">
+                            {user.username}
+                        </span>
+                    </li>
+                    <li className="nav-item">
+                        <NavLink to="/logout" className="nav-link" id="logout" title="Logout"><i className="fas fa-power-off" /></NavLink>
+                    </li>
+                </>
+            )
+        }
+        else {
+            return <li className="nav-item"><NavLink to="/login" className="nav-link">Login</NavLink></li>
+        }
+    }
+
     return (
-        <div>
-            <nav className="navbar navbar-dark bg-primary">
-                <div className="container-fluid">
-                    <a className="navbar-brand" href="/"><i className="fas fa-star" />My App</a>
-                    {/* <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            {user.accessToken ?
-                                
-                            }
-                        </li>
-                    </ul> */}
-                    <div className="d-flex">
-                        <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li className="nav-item">
-                                {user.accessToken ?
-                                    <Link to="/logout" className="nav-link" id="logout" title="Logout"><i className="fas fa-power-off" /></Link>
-                                    :
-                                    <Link to="/login" className="nav-link">Login</Link>
-                                }
-                            </li>
-                        </ul>
-                    </div>
+        <UserContext.Consumer>
+            {({ user }) =>
+                <div>
+                    <nav className="navbar navbar-dark bg-primary">
+                        <div className="container-fluid">
+                            <a className="navbar-brand" href="/"><i className="fas fa-star" />My App</a>
+                            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                                <li className="nav-item">
+                                    {user.accessToken ? <NavLink to="/todo" className="nav-link">To Do</NavLink> : ''}
+                                </li>
+                            </ul>
+                            <div className="d-flex">
+                                <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                                        {renderLoginAndLogoutElement(user)}
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
                 </div>
-            </nav>
-        </div>
+            }
+        </UserContext.Consumer>
     )
 }
 

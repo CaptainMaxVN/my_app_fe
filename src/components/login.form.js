@@ -1,37 +1,36 @@
-import { Button, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Card, CardHeader, CardBody, Alert } from 'reactstrap';
+import { Button, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Card, CardHeader, CardBody, Alert, Spinner } from 'reactstrap';
 import './login.form.css';
 import React, { useContext } from 'react';
 import { UserContext } from '../context/UserContext';
 import { Redirect } from 'react-router-dom';
-import {config} from '../config';
-import {axiosInstance} from '../axios';
+import {useFormDataModel} from '../hooks/useFormDataModel';
 
 const LoginForm = () => {
-    const { user, updateUser } = useContext(UserContext);
+    const { login } = useContext(UserContext);
+    const [model, updateModelProperty] = useFormDataModel({
+        username: '',
+        password: ''
+    });
     const [alert, setAlert] = React.useState();
     const [redirectToRegisterForm, setRedirectToRegisterForm] = React.useState();
     const [redirectToHome, setRedirectToHome] = React.useState();
+    const [loading, setLoading] = React.useState(false);
     const onChangeInputField = (e) => {
-        let {name, value} = e.target;
+        let { name, value } = e.target;
         console.log(`${name} changed to ${value}`);
-        let newValue = {...user, [name] : value};
-        console.log(newValue);
-        updateUser(newValue);
+        updateModelProperty(name, value);
         setAlert('');
     }
 
-    const login = () => {
-        axiosInstance.post(config.LOGIN_API, user).then(result => {
-            console.log(result);
-            const accessToken = result.data.token;
-            updateUser({...user, accessToken : accessToken});
-            setRedirectToHome(true);
-        }).catch(err => {
-            if(err.response.status == 401){
-                setAlert('User name or password is incorrect!');
+    const onLogin = () => {
+        setLoading(true);
+        login(model).then(message => {
+            setLoading(false);
+            if (message) {
+                setAlert(message);
             }
             else {
-                setAlert(err.response.statusText);
+                setRedirectToHome(true);
             }
         });
     }
@@ -41,52 +40,63 @@ const LoginForm = () => {
         return setRedirectToRegisterForm(true);
     }
 
-    if(redirectToRegisterForm) {
+    if (redirectToRegisterForm) {
         return (
-            <Redirect to="/register"/>
+            <Redirect to="/register" />
         )
     }
 
-    if(redirectToHome) {
-        return (
-            <Redirect to="/"/>
-        )
+    if (redirectToHome) {
+        window.location = process.env.REACT_APP_BASE_URL;
+    }
+
+    const renderFormContent = () => {
+        if (loading) {
+            return <Spinner color="primary" />
+        }
+        else {
+            return (
+                <>
+                    <Alert color="danger" hidden={!alert}>
+                        {alert}
+                    </Alert>
+                    <InputGroup className="mb-3">
+                        <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                                <span><i className="fa fa-user" /></span>
+                            </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Username" type="text" name="username" onChange={onChangeInputField} value={model.username} />
+                    </InputGroup>
+
+                    <InputGroup className="mb-3">
+                        <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                                <span><i className="fa fa-lock" /></span>
+                            </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Password" type="password" name="password" onChange={onChangeInputField} value={model.password} />
+                    </InputGroup>
+
+                    <Button size="lg" color="primary" block onClick={onLogin} className="login-button">Login</Button>
+                    or
+                    < Button size="lg" color="primary" block onClick={register} className="login-button" > Register</Button >
+                </>
+            )
+        }
     }
 
     return (
-                <>
-                <Form className="login-form">
-                    <Card>
-                        <CardHeader><h3>Login</h3></CardHeader>
-                        <CardBody>
-                        <Alert color="danger" hidden={!alert}>
-                            {alert}
-                        </Alert>
-                            <InputGroup className="mb-3">
-                                <InputGroupAddon addonType="prepend">
-                                    <InputGroupText>
-                                        <span><i className="fa fa-user" /></span>
-                                    </InputGroupText>
-                                </InputGroupAddon>
-                                <Input placeholder="Username" type="username" name="username" onChange={onChangeInputField} value={user.username} />
-                            </InputGroup>
-    
-                            <InputGroup className="mb-3">
-                                <InputGroupAddon addonType="prepend">
-                                    <InputGroupText>
-                                        <span><i className="fa fa-lock" /></span>
-                                    </InputGroupText>
-                                </InputGroupAddon>
-                                <Input placeholder="Password" type="password" name="password" onChange={onChangeInputField} value={user.password} />
-                            </InputGroup>
-    
-                            <Button size="lg" color="primary" block onClick={login} className="login-button">Login</Button>
-                            or
-                            <Button size="lg" color="primary" block onClick={register} className="login-button">Register</Button>
-                        </CardBody>
-                    </Card>
-                </Form>
-            </>
+        <>
+            <Form className="login-form">
+                <Card>
+                    <CardHeader><h3>Login</h3></CardHeader>
+                    <CardBody>
+                        {renderFormContent()}
+                    </CardBody>
+                </Card>
+            </Form>
+        </>
     )
 }
 

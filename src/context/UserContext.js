@@ -7,6 +7,5 @@ export const CachedUser = () => {
 export const UserContext = React.createContext();
 export const EmptyUser = {
     username: '',
-    password: '',
     accessToken: ''
   }

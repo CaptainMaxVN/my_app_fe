@@ -1,62 +1,50 @@
 import './App.css';
 import React from 'react';
 import LoginForm from './components/login.form';
+import ProvideAuth from './components/ProvideAuth';
 import RegisterForm from './components/register.form';
 import Logout from './components/logout';
 import Home from './components/home';
+import Todo from './components/todo';
 import NavBar from './components/navbar';
-import { UserContext, CachedUser } from './context/UserContext';
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  Link
+  Route
 } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from 'react-query';
+require('dotenv').config();
 
-import axios from 'axios';
-
+const queryClient = new QueryClient();
 
 function App() {
-  const [user, setUser] = React.useState(CachedUser());
-
-  const updateUser = object => {
-    const { username, accessToken } = object;
-    if (accessToken) {
-      localStorage.setItem('user', JSON.stringify({ username, accessToken }));
-    }
-    setUser(object);
-  }
-
-  const UserValue = { user, updateUser };
-
-  axios.interceptors.request.use(req => {
-    console.log(`${req.method} ${req.url}`);
-    // You must return the request at the end
-    return req;
-  });
-
   return (
     <div className="App">
-      <UserContext.Provider value={UserValue}>
-        <Router>
-          <NavBar />
-          <Switch>
-            <Route path="/login">
-              <LoginForm />
-            </Route>
-            <Route path="/logout">
-              <Logout />
-            </Route>
+      <QueryClientProvider client={queryClient}>
+        <ProvideAuth>
+          <Router>
+            <NavBar />
+            <Switch>
+              <Route path="/login">
+                <LoginForm />
+              </Route>
+              <Route path="/logout">
+                <Logout />
+              </Route>
 
-            <Route path="/register">
-              <RegisterForm />
-            </Route>
-            <Route path="/">
-              <Home />
-            </Route>
-          </Switch>
-        </Router>
-      </UserContext.Provider>
+              <Route path="/register">
+                <RegisterForm />
+              </Route>
+              <Route path="/todo">
+                <Todo />
+              </Route>
+              <Route path="/">
+                <Home />
+              </Route>
+            </Switch>
+          </Router>
+        </ProvideAuth>
+      </QueryClientProvider>
     </div>
   );
 }

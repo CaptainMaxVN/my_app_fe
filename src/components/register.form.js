@@ -8,7 +8,7 @@ import {useFormDataModel} from '../hooks/useFormDataModel';
 
 const RegisterForm = () => {
 
-    const [formModel, updateFormModel] = useFormDataModel({
+    const [formModel, onChangeInputField] = useFormDataModel({
         username: '',
         password: '',
         repassword: ''
@@ -17,10 +17,8 @@ const RegisterForm = () => {
     const [alert, setAlert] = React.useState();
     const [success, setSuccess] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
-    const onChangeInputField = (e) => {
-        let { name, value } = e.target;
-        console.log(`${name} changed to ${value}`);
-        updateFormModel(name, value);
+    const onChangeInput = (e) => {
+        onChangeInputField(e);
         setAlert('');
     }
 
@@ -71,7 +69,7 @@ const RegisterForm = () => {
                                 <span><i className="fa fa-user" /></span>
                             </InputGroupText>
                         </InputGroupAddon>
-                        <Input placeholder="Username" type="username" name="username" onChange={onChangeInputField} value={formModel.username} />
+                        <Input placeholder="Username" type="username" name="username" onChange={onChangeInput} value={formModel.username} />
                     </InputGroup>
 
                     <InputGroup className="mb-3">
@@ -80,7 +78,7 @@ const RegisterForm = () => {
                                 <span><i className="fa fa-lock" /></span>
                             </InputGroupText>
                         </InputGroupAddon>
-                        <Input placeholder="Password" type="password" name="password" onChange={onChangeInputField} value={formModel.password} />
+                        <Input placeholder="Password" type="password" name="password" onChange={onChangeInput} value={formModel.password} />
                     </InputGroup>
 
                     <InputGroup className="mb-3">

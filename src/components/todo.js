@@ -1,12 +1,15 @@
-import { useTodoList, useCreateNewItem } from "../hooks/useTodo";
+import { useTodoList } from "../hooks/useTodo";
 import React from 'react';
-import { Spinner, Alert, Button } from 'reactstrap';
+import { Spinner, Alert } from 'reactstrap';
 import _ from 'lodash';
 import TodoItem from './todoItem';
+import AddTodoItemDialogButton from './addTodoItemDialogButton';
+import Box from '@mui/material/Box';
+import List from '@mui/material/List';
+
 
 const Todo = () => {
     const { data, isLoading, isError } = useTodoList();
-    const createMutation = useCreateNewItem();
 
     if (isLoading) {
         return <Spinner color="primary" />
@@ -16,22 +19,15 @@ const Todo = () => {
         return <Alert color="danger">Fetching To Do list failed!</Alert>
     }
 
-    const addNewItem = () => {
-        createMutation.mutate();
-    }
-
     const renderList = () => {
-        const listItems = data.map((item, key) =>
-            <li key={key} className="list-group-item">
-                <TodoItem item={item}/>
-            </li>);
+        const listItems = data.map(item => <TodoItem item={item}/>);
 
         if (!_.isEmpty(listItems)) {
             return (
                 <>
-                    <ul className="list-group">
+                    <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
                         {listItems}
-                    </ul>
+                    </List>
                 </>
 
             )
@@ -43,10 +39,19 @@ const Todo = () => {
 
     return (
         <>
-            <div className="mb-3">
+            <Box
+                sx={{
+                    width: '50%',
+                    padding: '5px',
+                    margin: 'auto',
+                    marginTop: '100px',
+                    height: '100%',
+                    boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px',
+                }}
+            >
                 {renderList()}
-            </div>
-            <Button color="primary" onClick={addNewItem}><i className="fas fa-plus" /></Button>
+            </Box>
+            <AddTodoItemDialogButton/>
         </>
     )
 

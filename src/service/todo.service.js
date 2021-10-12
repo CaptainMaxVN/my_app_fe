@@ -2,7 +2,7 @@ import { axiosInstance } from "../axios";
 import { delay } from "../utils/FakeDelay";
 
 export async function getTodoList(username) {
-    await delay(1000);
+    // await delay(1000);
     return axiosInstance.post(process.env.REACT_APP_TODO_LIST_API, {createdBy: username});
 }
 

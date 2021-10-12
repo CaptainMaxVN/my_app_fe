@@ -21,14 +21,14 @@ const useProvideAuth = () => {
             let result = await axiosInstance.post(process.env.REACT_APP_LOGIN_API, userInfo);
             console.log(result);
             console.log('login success');
-            await delay(1000);
+            // await delay(1000);
             const accessToken = result.data.token;
             dispatch({ type: 'LOGIN', payload: { username: userInfo.username, accessToken } });
             return message;
         }
         catch (err) {
             console.log('login fail');
-            await delay(1000);
+            // await delay(1000);
             if (err.response && err.response.status === 401) {
                 message = 'User name or password is incorrect!';
             }

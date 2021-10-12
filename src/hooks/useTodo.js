@@ -11,8 +11,8 @@ export function useTodoList() {
 
 export function useCreateNewItem(){
     const { user } = React.useContext(UserContext);
-    const item = {subject: 'test adding', description: 'test adding', createdBy: user.username};
-    return useChangeTodoList(()=> {
+    return useChangeTodoList(item=> {
+        item.createdBy = user.username;
         console.log('add new item: ' + JSON.stringify(item));
         createNewTodoItem(item)
     });

@@ -1,48 +1,54 @@
-import { NavLink, Link } from "react-router-dom";
+import React from "react";
+import { Redirect } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import StarBorderPurple500SharpIcon from '@mui/icons-material/StarBorderPurple500Sharp';
+import Link from '@mui/material/Link';
 const NavBar = () => {
-
 
     const renderLoginAndLogoutElement = user => {
         if (user.accessToken) {
             return (
                 <>
-                    <li className="nav-item">
-                        <span className="navbar-text">
-                            {user.username}
-                        </span>
-                    </li>
-                    <li className="nav-item">
-                        <NavLink to="/logout" className="nav-link" id="logout" title="Logout"><i className="fas fa-power-off" /></NavLink>
-                    </li>
+                    <span >
+                        {user.username}
+                    </span>
+                    <Button href="/logout" color="inherit">Logout</Button>
                 </>
             )
         }
         else {
-            return <li className="nav-item"><NavLink to="/login" className="nav-link">Login</NavLink></li>
+            return <Button href="/login" color="inherit">Login</Button>
         }
     }
 
     return (
         <UserContext.Consumer>
             {({ user }) =>
-                <div>
-                    <nav className="navbar navbar-dark bg-primary">
-                        <div className="container-fluid">
-                            <a className="navbar-brand" href="/"><i className="fas fa-star" />My App</a>
-                            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                                <li className="nav-item">
-                                    {user.accessToken ? <NavLink to="/todo" className="nav-link">To Do</NavLink> : ''}
-                                </li>
-                            </ul>
-                            <div className="d-flex">
-                                <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                                        {renderLoginAndLogoutElement(user)}
-                                </ul>
-                            </div>
-                        </div>
-                    </nav>
-                </div>
+                <Box sx={{ flexGrow: 1 }}>
+                    <AppBar position="static">
+                        <Toolbar>
+                            <Button
+                                size="large"
+                                edge="start"
+                                color="inherit"
+                                aria-label="menu"
+                                sx={{ mr: 2 }}
+                                href="/"
+                                startIcon={<StarBorderPurple500SharpIcon />}
+                            >
+                                Home
+                            </Button>
+                            <Button href="/todo" color="inherit">To Do</Button>
+                            {renderLoginAndLogoutElement(user)}
+                        </Toolbar>
+                    </AppBar>
+                </Box>
             }
         </UserContext.Consumer>
     )

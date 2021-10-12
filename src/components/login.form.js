@@ -7,7 +7,7 @@ import {useFormDataModel} from '../hooks/useFormDataModel';
 
 const LoginForm = () => {
     const { login } = useContext(UserContext);
-    const [model, updateModelProperty] = useFormDataModel({
+    const [model, onChangeInputField] = useFormDataModel({
         username: '',
         password: ''
     });
@@ -15,13 +15,11 @@ const LoginForm = () => {
     const [redirectToRegisterForm, setRedirectToRegisterForm] = React.useState();
     const [redirectToHome, setRedirectToHome] = React.useState();
     const [loading, setLoading] = React.useState(false);
-    const onChangeInputField = (e) => {
-        let { name, value } = e.target;
-        console.log(`${name} changed to ${value}`);
-        updateModelProperty(name, value);
+    
+    const onChangeInput = (e) => {
+        onChangeInputField(e);
         setAlert('');
     }
-
     const onLogin = () => {
         setLoading(true);
         login(model).then(message => {
@@ -66,7 +64,7 @@ const LoginForm = () => {
                                 <span><i className="fa fa-user" /></span>
                             </InputGroupText>
                         </InputGroupAddon>
-                        <Input placeholder="Username" type="text" name="username" onChange={onChangeInputField} value={model.username} />
+                        <Input placeholder="Username" type="text" name="username" onChange={onChangeInput} value={model.username} />
                     </InputGroup>
 
                     <InputGroup className="mb-3">
@@ -75,7 +73,7 @@ const LoginForm = () => {
                                 <span><i className="fa fa-lock" /></span>
                             </InputGroupText>
                         </InputGroupAddon>
-                        <Input placeholder="Password" type="password" name="password" onChange={onChangeInputField} value={model.password} />
+                        <Input placeholder="Password" type="password" name="password" onChange={onChangeInput} value={model.password} />
                     </InputGroup>
 
                     <Button size="lg" color="primary" block onClick={onLogin} className="login-button">Login</Button>

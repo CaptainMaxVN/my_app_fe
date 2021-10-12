@@ -11,5 +11,11 @@ export const useFormDataModel = (initialState) => {
         modelDispatcher({payload: {[key]: value}})
     }
 
-    return [model, updateModelProperty];
+    const onChangeInputField = (e) => {
+        let { name, value } = e.target;
+        console.log(`${name} changed to ${value}`);
+        updateModelProperty(name, value);
+    }
+
+    return [model, onChangeInputField];
 }

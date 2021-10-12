@@ -25,9 +25,12 @@ axiosInstance.interceptors.response.use(response => {
     console.log(response);
     return response;
   }, error => {
-    if(error.response.status === 401 && error.response.config.url !== process.env.REACT_APP_LOGIN_API) {
+    if(error.response?.status === 401 && error.response?.config.url !== process.env.REACT_APP_LOGIN_API) {
         alert("You are not authorized! Please login again to continue.");
         window.location = process.env.REACT_APP_LOGIN_PATH;
+   }
+   else{
+       alert("Server is getting problem!");
    }
     console.log(error.response);
     return Promise.reject(error);

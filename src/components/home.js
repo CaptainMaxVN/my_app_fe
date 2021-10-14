@@ -3,6 +3,7 @@ import { Button } from 'reactstrap';
 import React, { useContext } from 'react';
 import { Link } from "react-router-dom";
 import { axiosInstance } from "../axios";
+
 const Home = () => {
     const { user } = useContext(UserContext)
     const [userInfo, setUserInfo] = React.useState();

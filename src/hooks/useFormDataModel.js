@@ -17,5 +17,5 @@ export const useFormDataModel = (initialState) => {
         updateModelProperty(name, value);
     }
 
-    return [model, onChangeInputField];
+    return [model, onChangeInputField, updateModelProperty];
 }

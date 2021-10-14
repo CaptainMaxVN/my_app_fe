@@ -1,29 +1,62 @@
 import React from "react";
-import { Redirect } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
 import StarBorderPurple500SharpIcon from '@mui/icons-material/StarBorderPurple500Sharp';
-import Link from '@mui/material/Link';
+import MenuItem from '@mui/material/MenuItem';
+import Menu from '@mui/material/Menu';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+
 const NavBar = () => {
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const isMenuOpen = Boolean(anchorEl);
+
+    const handleProfileMenuOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+      };
+
+      const handleMenuClose = () => {
+        setAnchorEl(null);
+      };
+
+    function onLogout() {
+        handleMenuClose();
+        window.location = process.env.REACT_APP_LOGOUT_PATH;
+    }
+
+    const menuId = 'primary-search-account-menu';
+    const renderMenu = (
+        <Menu
+            anchorEl={anchorEl}
+            anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+            }}
+            id={menuId}
+            keepMounted
+            transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+            }}
+            open={isMenuOpen}
+            onClose={handleMenuClose}
+        >
+            <MenuItem href="/logout" onClick={onLogout}>LOG OUT</MenuItem>
+        </Menu>
+    );
 
     const renderLoginAndLogoutElement = user => {
         if (user.accessToken) {
             return (
                 <>
-                    <span >
-                        {user.username}
-                    </span>
-                    <Button href="/logout" color="inherit">Logout</Button>
+                    <Button color="inherit" size="large" edge="end" onClick={handleProfileMenuOpen} startIcon={<AccountCircle/>}> {user.username}</Button>
                 </>
             )
         }
         else {
-            return <Button href="/login" color="inherit">Login</Button>
+            return <Button href="/login" color="inherit" size="large" edge="end">Login</Button>
         }
     }
 
@@ -45,9 +78,13 @@ const NavBar = () => {
                                 Home
                             </Button>
                             <Button href="/todo" color="inherit">To Do</Button>
-                            {renderLoginAndLogoutElement(user)}
+                            <Box sx={{ flexGrow: 1 }} />
+                            <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                                {renderLoginAndLogoutElement(user)}
+                            </Box>
                         </Toolbar>
                     </AppBar>
+                    {renderMenu}
                 </Box>
             }
         </UserContext.Consumer>

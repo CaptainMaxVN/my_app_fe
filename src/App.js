@@ -5,7 +5,7 @@ import ProvideAuth from './components/ProvideAuth';
 import RegisterForm from './components/register.form';
 import Logout from './components/logout';
 import Home from './components/home';
-import Todo from './components/todo';
+import Todo from './components/todoComponents/todo';
 import NavBar from './components/navbar';
 import {
   BrowserRouter as Router,
